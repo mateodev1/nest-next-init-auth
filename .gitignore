@@ -1,0 +1,7 @@
+.env
+node_modules/
+Dockerfile
+.dockerignore
+backend/
+frontend/
+.turbo/

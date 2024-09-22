@@ -1,0 +1,19 @@
+{
+  "tasks": {
+    "dev": {
+      "dependsOn": ["^dev"],
+      "outputs": []
+    },
+    "dev:backend": {
+      "outputs": [],
+      "cache": false
+    },
+    "dev:frontend": {
+      "dependsOn": ["dev:backend"],
+      "outputs": [],
+      "cache": false
+    }
+  },
+  "$schema": "https://turbo.build/schema.json",
+  "globalDependencies": ["**/.env.*local"]
+}

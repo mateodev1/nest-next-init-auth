@@ -1,0 +1,55 @@
+version: "3"
+
+services:
+  frontend_next:
+    build: ./frontend_next
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend_next/src:/app/src
+      - ./frontend_next/public:/app/public
+      - ./frontend_next/tsconfig.json:/app/tsconfig.json # Monta tsconfig
+      - ./frontend_next/next.config.mjs:/app/next.config.mjs # Monta next.config
+      - /app/node_modules
+    command: ["npm", "run", "dev"]
+    environment:
+      - PORT=3000
+    depends_on:
+      - backend_nest
+    networks:
+      - app_network
+
+  backend_nest:
+    build: ./backend_nest
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./backend_nest/src:/usr/src/app/src
+      - /usr/src/app/node_modules # Evita conflictos con node_modules
+    command: npm run start:dev
+    environment:
+      - PORT=4000
+      - DATABASE_URL=postgresql://postgres:postgres@postgres_db:5432/name-proyect?schema=public
+    depends_on:
+      - postgres_db
+    networks:
+      - app_network
+
+  postgres_db:
+    container_name: postgres_db
+    image: postgres:16.2
+    restart: always
+    volumes:
+      - ./backend_nest/postgres:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=name-proyect
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge
